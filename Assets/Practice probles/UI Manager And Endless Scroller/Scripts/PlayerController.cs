@@ -8,7 +8,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _maxBoundary;
     [SerializeField] private float _speed;
 
-    //[SerializeField] private float _spawn
+    [SerializeField] private float _playerTriggerLength;
+
+    private float _playerRunLengthTrigger;
+
+    public static event Action OnPlayerReachedMaxTriggerLength;
+
+    private void Start()
+    {
+        _playerRunLengthTrigger = transform.position.z + _playerTriggerLength;
+    }
 
     void Update()
     {
@@ -51,6 +60,12 @@ public class PlayerController : MonoBehaviour
     private void Run()
     {
         transform.position += transform.forward * _speed * Time.deltaTime;
+
+        if(transform.position.z >=  _playerRunLengthTrigger)
+        {
+            OnPlayerReachedMaxTriggerLength?.Invoke();
+            _playerRunLengthTrigger += _playerTriggerLength;
+        }
     }
 
 
