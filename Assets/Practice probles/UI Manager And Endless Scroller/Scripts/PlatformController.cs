@@ -40,6 +40,11 @@ public class PlatformController : MonoBehaviour
 
         if (platform != null)
         {
+            platform.GetComponent<ObstacleSpawner>().Init();
+        }
+
+        if (platform != null)
+        {
             SetPlatformPosition(platform);
         }
     }

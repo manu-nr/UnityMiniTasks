@@ -37,6 +37,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("[NRM] Hit obstacle 1");
+
+        if (collision.body.CompareTag("Obstacle"))
+        {
+            Debug.Log("[NRM] Hit obstacle");
+        }
+    }
+
     private void PositionPlayer(PlayerInputType inputType)
     {
         float newPlayerPos = transform.position.x;
