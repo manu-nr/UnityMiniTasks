@@ -1,0 +1,90 @@
+using System;
+using UnityEngine;
+
+public class PlayerController : MonoBehaviour
+{
+    [SerializeField] private float _horizontalGap;
+    [SerializeField] private float _minBoundary;
+    [SerializeField] private float _maxBoundary;
+    [SerializeField] private float _speed;
+
+    [SerializeField] private float _playerTriggerLength;
+
+    private float _playerRunLengthTrigger;
+
+    public static event Action OnPlayerReachedMaxTriggerLength;
+
+    private void Start()
+    {
+        _playerRunLengthTrigger = transform.position.z + _playerTriggerLength;
+    }
+
+    void Update()
+    {
+        Run();
+
+        if(Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            PositionPlayer(PlayerInputType.Left);
+        }
+        else if(Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            PositionPlayer(PlayerInputType.Right);
+        }
+        else if(Input.GetKeyDown(KeyCode.Space))
+        {
+
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("[NRM] Hit obstacle 1");
+
+        if (collision.body.CompareTag("Obstacle"))
+        {
+            Debug.Log("[NRM] Hit obstacle");
+        }
+    }
+
+    private void PositionPlayer(PlayerInputType inputType)
+    {
+        float newPlayerPos = transform.position.x;
+
+        if(inputType == PlayerInputType.Left)
+        {
+            newPlayerPos -= _horizontalGap;
+        }
+        else if(inputType == PlayerInputType.Right)
+        {
+            newPlayerPos += _horizontalGap;
+        }
+
+        newPlayerPos = Mathf.Clamp(newPlayerPos, _minBoundary, _maxBoundary);
+        
+        Vector3 position = transform.position;
+
+        transform.position = new Vector3(newPlayerPos, position.y, position.z);
+    }
+
+    private void Run()
+    {
+        transform.position += transform.forward * _speed * Time.deltaTime;
+
+        if(transform.position.z >=  _playerRunLengthTrigger)
+        {
+            OnPlayerReachedMaxTriggerLength?.Invoke();
+            _playerRunLengthTrigger += _playerTriggerLength;
+        }
+    }
+
+
+
+    public enum PlayerInputType
+    {
+        Left,
+        Right, 
+        Jump
+    }
+}
+
