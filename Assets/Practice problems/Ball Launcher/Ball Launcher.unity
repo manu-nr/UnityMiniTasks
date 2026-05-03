@@ -771,10 +771,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ballPrefab: {fileID: 4350874406377604858, guid: db6cb79803d99de41ae15f15a875d281, type: 3}
-  _numberOfBalls: 10
+  _numberOfBallsToPool: 10
   _ballHolder: {fileID: 1226070596}
-  _throwForce: 500
+  _throwForce: 10
   _launchTarget: {fileID: 11400000, guid: 364548eb93641e24b8654af5bfae4fb4, type: 2}
+  _xAxisAngularVelocity: 0
+  _yAxisAngularVelocity: 0
+  _zAxisAngularVelocity: 0
+  _launchHeight: 45
+  _applyHeight: 0
+  _applySpeed: 0
 --- !u!1 &1356435205
 GameObject:
   m_ObjectHideFlags: 0
@@ -1218,7 +1224,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1975653788}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: bfd4a9da5da6bfb44ba9a6dbe0db1e19, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
