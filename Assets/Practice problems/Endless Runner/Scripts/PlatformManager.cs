@@ -5,9 +5,10 @@ public class PlatformManager : MonoBehaviour
 {
     [SerializeField] private Platform _platformPrefab;
     [SerializeField] private List<Platform> _pooledPlatforms;
-    [SerializeField] private int _platformCount = 5;
+    [SerializeField] private int _platformCount = 10;
+    [SerializeField] private int _initialPlatformCount = 3;
     [SerializeField] private Transform _platformHolder;
-    [SerializeField] private Vector3 _spawnPosition = new Vector3(0, 0, 0);
+    [SerializeField] private Vector3 _spawnPosition = new Vector3(0, 0, 55);
 
     private int _currentPlatformIndex = -1;
 
@@ -27,6 +28,12 @@ public class PlatformManager : MonoBehaviour
         for (int i = 0; i < _platformCount; i++)
         {
             SpawnPlatform();
+        }
+
+        for (int i = 0; i < _initialPlatformCount; i++)
+        {
+            Platform platform = GetPlatformFromPool();
+            platform.transform.position = new Vector3(0, 0, i * 25);
         }
     }
 
