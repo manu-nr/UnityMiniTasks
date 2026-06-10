@@ -531,6 +531,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tilePrefab: {fileID: 7588619923611326312, guid: 06ef5ee56f9807343a7338d8b05b35b7, type: 3}
   _tileSpacing: 2
+  _tileDisableSpeed: 5
   _poolSize: 5
   _pooledTiles: []
 --- !u!1001 &502001934591243583

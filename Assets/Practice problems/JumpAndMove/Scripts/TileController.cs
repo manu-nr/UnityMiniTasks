@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ public class TileController : MonoBehaviour
 {
     [SerializeField] private Tile _tilePrefab;
     [SerializeField] private float _tileSpacing;
+    [SerializeField] private float _tileDisableSpeed;
 
     [Header("Pool"), SerializeField] private float _poolSize;
     [SerializeField] private List<Tile> _pooledTiles;
@@ -25,22 +27,34 @@ public class TileController : MonoBehaviour
             tile.gameObject.SetActive(false);
             _pooledTiles.Add(tile);
         }
-        SpawnTile();
+        SpawnTile(10f);
+        SpawnTileAfterDelay(5f);
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.S))
-            SpawnTile();
+            SpawnTile(_tileDisableSpeed);
     }
     #endregion
 
-    private void SpawnTile()
+    private void SpawnTile(float delay = 0f)
     {
         Tile tile = GetTile();
         tile.gameObject.SetActive(true);
-        tile.StartDisable();
+        tile.StartDisable(delay);
         PositionTile(tile);
+    }
+
+    private void SpawnTileAfterDelay(float delay = 0f)
+    {
+        StartCoroutine(SpawnTileAfterDelayRoutine(delay));
+    }
+
+    private IEnumerator SpawnTileAfterDelayRoutine(float delay = 0f)
+    {
+        yield return new WaitForSeconds(delay);
+        SpawnTile(_tileDisableSpeed);
     }
 
     private void PositionTile(Tile tile)
