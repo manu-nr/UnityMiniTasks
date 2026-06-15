@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,6 +19,8 @@ public class TileController : MonoBehaviour
 
     private Tile _tile1;
     private Tile _tile2;
+
+    public static event Action<Vector3> OnTileSpawned;
 
     #region Unity Methods
     private void Start()
@@ -45,6 +48,7 @@ public class TileController : MonoBehaviour
         tile.StartDisable(_tileDisableSpeed);
         PositionTile(tile);
         SpawnTileAfterDelay(_nextTileSpawnSpeed);
+        OnTileSpawned?.Invoke(tile.transform.position);
     }
 
     private void SpawnTileAfterDelay(float delay = 0f)
@@ -63,9 +67,9 @@ public class TileController : MonoBehaviour
         if(_previousTileIndex >= 0)
         {
             Vector3 newPosition = _pooledTiles[_previousTileIndex].transform.position;
-            int axis = Random.Range(0, 2);
+            int axis = UnityEngine.Random.Range(0, 2);
 
-            float offsetValue = Random.value > 0.5f ? 1 : -1;
+            float offsetValue = UnityEngine.Random.value > 0.5f ? 1 : -1;
 
             if (axis == 0)
                 newPosition.x += _tileSpacing * offsetValue;
