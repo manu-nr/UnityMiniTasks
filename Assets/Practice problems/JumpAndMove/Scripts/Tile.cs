@@ -3,16 +3,15 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    [SerializeField] private float _disableSpeed;
 
-    public void StartDisable()
+    public void StartDisable(float delay)
     {
-        StartCoroutine(DisableAfterTime());
+        StartCoroutine(DisableAfterTime(delay));
     }
 
-    private IEnumerator DisableAfterTime()
+    private IEnumerator DisableAfterTime(float delay)
     {
-        yield return new WaitForSeconds(_disableSpeed);
+        yield return new WaitForSeconds(delay);
         gameObject.SetActive(false);
     }
 }
