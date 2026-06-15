@@ -8,6 +8,7 @@ public class TileController : MonoBehaviour
     [SerializeField] private Tile _tilePrefab;
     [SerializeField] private float _tileSpacing;
     [SerializeField] private float _tileDisableSpeed;
+    [SerializeField] private float _nextTileSpawnSpeed;
 
     [Header("Pool"), SerializeField] private float _poolSize;
     [SerializeField] private List<Tile> _pooledTiles;
@@ -27,23 +28,23 @@ public class TileController : MonoBehaviour
             tile.gameObject.SetActive(false);
             _pooledTiles.Add(tile);
         }
-        SpawnTile(10f);
-        SpawnTileAfterDelay(5f);
+        SpawnTile();
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.S))
-            SpawnTile(_tileDisableSpeed);
+            SpawnTile();
     }
     #endregion
 
-    private void SpawnTile(float delay = 0f)
+    private void SpawnTile()
     {
         Tile tile = GetTile();
         tile.gameObject.SetActive(true);
-        tile.StartDisable(delay);
+        tile.StartDisable(_tileDisableSpeed);
         PositionTile(tile);
+        SpawnTileAfterDelay(_nextTileSpawnSpeed);
     }
 
     private void SpawnTileAfterDelay(float delay = 0f)
@@ -54,7 +55,7 @@ public class TileController : MonoBehaviour
     private IEnumerator SpawnTileAfterDelayRoutine(float delay = 0f)
     {
         yield return new WaitForSeconds(delay);
-        SpawnTile(_tileDisableSpeed);
+        SpawnTile();
     }
 
     private void PositionTile(Tile tile)
