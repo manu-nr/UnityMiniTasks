@@ -6,6 +6,21 @@ public class JumpAndMovePlayerController : MonoBehaviour
     [SerializeField] private Rigidbody _playerRigidBody;
     [SerializeField] private float _movementForce;
 
+    private Vector3 _startPosition;
+
+    private void Start()
+    {
+        _startPosition = transform.position;
+        JumpAndMoveGameManager.OnGameStarted += OnGameStarted;
+
+        TogglePlayer(false);
+    }
+
+    private void OnDestroy()
+    {
+        JumpAndMoveGameManager.OnGameStarted -= OnGameStarted;
+    }
+
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.Space))
@@ -32,9 +47,6 @@ public class JumpAndMovePlayerController : MonoBehaviour
                 ControlPlayerMovement(MovementType.Right);
             }
         }
-        
-
-        Debug.Log("[NRM] Player velocity: " + _playerRigidBody.linearVelocity);
     }
 
     private void ControlPlayerMovement(MovementType type)
@@ -54,6 +66,29 @@ public class JumpAndMovePlayerController : MonoBehaviour
                 _playerRigidBody.AddForce(new Vector3(_movementForce, 0f, 0f), ForceMode.Impulse);
                 break;
         }
+    }
+    private void OnGameStarted(bool started)
+    {
+        if (started)
+            TogglePlayer(true);
+        else
+            OnGameOver();
+    }
+
+    private void OnGameOver()
+    {
+        ResetPlayerPosition();
+    }
+
+    private void ResetPlayerPosition()
+    {
+        transform.position = _startPosition;
+        TogglePlayer(false);
+    }
+
+    private void TogglePlayer(bool on)
+    {
+        gameObject.SetActive(on);
     }
 }
 

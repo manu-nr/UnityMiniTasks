@@ -17,21 +17,26 @@ public class TileController : MonoBehaviour
     private int _currentTileIndex = -1;
     private int _previousTileIndex = -1;
 
-    private Tile _tile1;
-    private Tile _tile2;
+    private Coroutine _spawnTileRoutine;
 
     public static event Action<Vector3> OnTileSpawned;
 
     #region Unity Methods
     private void Start()
     {
-        for(int i=0; i<_poolSize; i++)
+        JumpAndMoveGameManager.OnGameStarted += OnGameStarted;
+
+        for (int i=0; i<_poolSize; i++)
         {
             Tile tile = Instantiate(_tilePrefab, transform);
             tile.gameObject.SetActive(false);
             _pooledTiles.Add(tile);
         }
-        SpawnTile();
+    }
+
+    private void OnDestroy()
+    {
+        JumpAndMoveGameManager.OnGameStarted -= OnGameStarted;
     }
 
     private void Update()
@@ -40,6 +45,19 @@ public class TileController : MonoBehaviour
             SpawnTile();
     }
     #endregion
+
+    private void OnGameStarted(bool started)
+    {
+        if (started)
+            SpawnTile();
+        else
+            StopSpawning();
+    }
+
+    private void StopSpawning()
+    {
+        StopCoroutine(_spawnTileRoutine);
+    }
 
     private void SpawnTile()
     {
@@ -53,7 +71,7 @@ public class TileController : MonoBehaviour
 
     private void SpawnTileAfterDelay(float delay = 0f)
     {
-        StartCoroutine(SpawnTileAfterDelayRoutine(delay));
+        _spawnTileRoutine = StartCoroutine(SpawnTileAfterDelayRoutine(delay));
     }
 
     private IEnumerator SpawnTileAfterDelayRoutine(float delay = 0f)
