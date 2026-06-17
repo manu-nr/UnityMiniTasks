@@ -33,18 +33,19 @@ public class TileController : MonoBehaviour
             _pooledTiles.Add(tile);
         }
     }
-
-    private void OnDestroy()
-    {
-        JumpAndMoveGameManager.OnGameStarted -= OnGameStarted;
-    }
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.S))
             SpawnTile();
     }
+
+    private void OnDestroy()
+    {
+        JumpAndMoveGameManager.OnGameStarted -= OnGameStarted;
+    }
     #endregion
+
+    #region Private Methods
 
     private void OnGameStarted(bool started)
     {
@@ -101,6 +102,7 @@ public class TileController : MonoBehaviour
             tile.transform.position = Vector3.zero;
         }
     }
+    #endregion
 
     #region Public Methods
     public Tile GetTile()
