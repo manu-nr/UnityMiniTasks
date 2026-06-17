@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class JumpAndMovePlayerController : MonoBehaviour
@@ -5,8 +6,11 @@ public class JumpAndMovePlayerController : MonoBehaviour
     [SerializeField] private Vector3 _jumpForce;
     [SerializeField] private Rigidbody _playerRigidBody;
     [SerializeField] private float _movementForce;
+    [SerializeField] private float _playerFallThreshold;
 
     private Vector3 _startPosition;
+
+    public static event Action OnPlayerFall;
 
     private void Start()
     {
@@ -23,6 +27,11 @@ public class JumpAndMovePlayerController : MonoBehaviour
 
     private void Update()
     {
+        if(transform.position.y < _playerFallThreshold)
+        {
+            OnPlayerFall?.Invoke();
+        }
+
         if(Input.GetKeyDown(KeyCode.Space))
         {
             _playerRigidBody.AddForce(_jumpForce, ForceMode.Impulse);

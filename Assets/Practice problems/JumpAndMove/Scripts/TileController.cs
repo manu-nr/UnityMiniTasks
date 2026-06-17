@@ -57,7 +57,10 @@ public class TileController : MonoBehaviour
 
     private void StopSpawning()
     {
-        StopCoroutine(_spawnTileRoutine);
+        if(_spawnTileRoutine != null)
+            StopCoroutine(_spawnTileRoutine);
+
+        ResetTiles();
     }
 
     private void SpawnTile()
@@ -68,6 +71,17 @@ public class TileController : MonoBehaviour
         PositionTile(tile);
         SpawnTileAfterDelay(_nextTileSpawnSpeed);
         OnTileSpawned?.Invoke(tile.transform.position);
+    }
+
+    private void ResetTiles()
+    {
+        _currentTileIndex = -1;
+        _previousTileIndex = -1;
+
+        foreach (Tile tile in _pooledTiles)
+        {
+            tile.ForceDisableTile();
+        }
     }
 
     private void SpawnTileAfterDelay(float delay = 0f)

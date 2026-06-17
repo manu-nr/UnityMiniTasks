@@ -37,6 +37,7 @@ public class JumpAndMoveUIManager : MonoBehaviour
     {
         _startGameButton.onClick.AddListener(OnStartGameButtonClick);
         JumpAndMoveGameManager.UpdateCurrentScore += HandleScoreboardUpdate;
+        JumpAndMoveGameManager.OnGameStarted += HandleGameStateChanged;
         ToggleCanvas(CanvasType.GameStart);
     }
 
@@ -44,10 +45,20 @@ public class JumpAndMoveUIManager : MonoBehaviour
     {
         _startGameButton.onClick.RemoveListener(OnStartGameButtonClick);
         JumpAndMoveGameManager.UpdateCurrentScore -= HandleScoreboardUpdate;
+        JumpAndMoveGameManager.OnGameStarted -= HandleGameStateChanged;
     }
     #endregion
 
     #region Private Methods
+
+    private void HandleGameStateChanged(bool started)
+    {
+        if(!started)
+        {
+            ToggleCanvas(CanvasType.GameOver);
+        }
+    }
+
     private void HandleScoreboardUpdate(int score)
     {
         Debug.Log("Score updated: " + score);
@@ -63,7 +74,7 @@ public class JumpAndMoveUIManager : MonoBehaviour
     {
         _gameStartCanvas?.gameObject.SetActive(canvas == CanvasType.GameStart);
         _inGameCanvas?.gameObject.SetActive(canvas == CanvasType.InGame);
-        //_gameOverCanvas.gameObject.SetActive(canvas == CanvasType.GameOver);
+        _gameOverCanvas?.gameObject.SetActive(canvas == CanvasType.GameOver);
     }
     #endregion
 }

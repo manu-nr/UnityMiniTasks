@@ -25,6 +25,7 @@ public class JumpAndMoveGameManager : MonoBehaviour
     {
         JumpAndMoveUIManager.OnButtonClicked += OnButtonClicked;
         TileTrigger.OnPlayerEnterTile += HandlePlayerEnterTile;
+        JumpAndMovePlayerController.OnPlayerFall += HandleGameOver;
         _currentScore = -1;
     }
 
@@ -32,6 +33,7 @@ public class JumpAndMoveGameManager : MonoBehaviour
     {
         JumpAndMoveUIManager.OnButtonClicked -= OnButtonClicked;
         TileTrigger.OnPlayerEnterTile -= HandlePlayerEnterTile;
+        JumpAndMovePlayerController.OnPlayerFall -= HandleGameOver;
     }
     #endregion
 
@@ -52,6 +54,12 @@ public class JumpAndMoveGameManager : MonoBehaviour
     {
         _currentScore++;
         UpdateCurrentScore?.Invoke(_currentScore);
+    }
+
+    private void HandleGameOver()
+    {
+        _isGameStarted = false;
+        OnGameStarted?.Invoke(_isGameStarted);
     }
 
     #endregion

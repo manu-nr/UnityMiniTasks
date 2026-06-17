@@ -4,10 +4,19 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+    private Coroutine _startDisableRoutine;
 
     public void StartDisable(float delay)
     {
-        StartCoroutine(DisableAfterTime(delay));
+        _startDisableRoutine = StartCoroutine(DisableAfterTime(delay));
+    }
+
+    public void ForceDisableTile()
+    {
+        gameObject.SetActive(false);
+
+        if(_startDisableRoutine != null)
+            StopCoroutine(_startDisableRoutine);
     }
 
     private IEnumerator DisableAfterTime(float delay)
