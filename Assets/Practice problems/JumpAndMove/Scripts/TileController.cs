@@ -67,7 +67,7 @@ public class TileController : MonoBehaviour
     {
         Tile tile = GetTile();
         tile.gameObject.SetActive(true);
-        tile.StartDisable(_tileDisableSpeed);
+        tile.Init(_tileDisableSpeed);
         PositionTile(tile);
         SpawnTileAfterDelay(_nextTileSpawnSpeed);
         OnTileSpawned?.Invoke(tile.transform.position);

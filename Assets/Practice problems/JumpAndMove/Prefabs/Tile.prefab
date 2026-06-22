@@ -66,6 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7af513d8fe8d8714b9ee7db6258b7c59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canPlayerEnterTile: 0
 --- !u!1 &9129375767929666676
 GameObject:
   m_ObjectHideFlags: 0
@@ -188,3 +189,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 089999562de02d540b6c095bbf2fd31d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tileTrigger: {fileID: 8498584827145453465}

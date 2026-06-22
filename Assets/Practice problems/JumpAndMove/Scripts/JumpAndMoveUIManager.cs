@@ -29,6 +29,9 @@ public class JumpAndMoveUIManager : MonoBehaviour
 
     [Header("Text")]
     [SerializeField] private TextMeshProUGUI _currentScoreText;
+    [SerializeField] private TextMeshProUGUI _currentScoreTextInGameOver;
+
+    private int _currentScore;
 
     public static event Action<ButtonType> OnButtonClicked;
 
@@ -36,6 +39,7 @@ public class JumpAndMoveUIManager : MonoBehaviour
     private void Start()
     {
         _startGameButton.onClick.AddListener(OnStartGameButtonClick);
+        _restartGameButton.onClick.AddListener(OnRestartGameButtonClick);
         JumpAndMoveGameManager.UpdateCurrentScore += HandleScoreboardUpdate;
         JumpAndMoveGameManager.OnGameStarted += HandleGameStateChanged;
         ToggleCanvas(CanvasType.GameStart);
@@ -44,6 +48,7 @@ public class JumpAndMoveUIManager : MonoBehaviour
     private void OnDestroy()
     {
         _startGameButton.onClick.RemoveListener(OnStartGameButtonClick);
+        _restartGameButton.onClick.RemoveListener(OnRestartGameButtonClick);
         JumpAndMoveGameManager.UpdateCurrentScore -= HandleScoreboardUpdate;
         JumpAndMoveGameManager.OnGameStarted -= HandleGameStateChanged;
     }
@@ -56,17 +61,29 @@ public class JumpAndMoveUIManager : MonoBehaviour
         if(!started)
         {
             ToggleCanvas(CanvasType.GameOver);
+            _currentScoreTextInGameOver.SetText("Score: " + _currentScore.ToString());
+        }
+        else
+        {
+            _currentScore = 0;
         }
     }
 
     private void HandleScoreboardUpdate(int score)
     {
         Debug.Log("Score updated: " + score);
-        _currentScoreText.SetText("Score: " + score.ToString());
+        _currentScore = score;
+        _currentScoreText.SetText("Score: " + _currentScore.ToString());
     }
     private void OnStartGameButtonClick()
     {
         OnButtonClicked?.Invoke(ButtonType.StartGame);
+        ToggleCanvas(CanvasType.InGame);
+    }
+
+    private void OnRestartGameButtonClick()
+    {
+        OnButtonClicked?.Invoke(ButtonType.RestartGame);
         ToggleCanvas(CanvasType.InGame);
     }
 

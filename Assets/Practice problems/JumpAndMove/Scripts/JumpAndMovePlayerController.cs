@@ -92,6 +92,8 @@ public class JumpAndMovePlayerController : MonoBehaviour
     private void ResetPlayerPosition()
     {
         transform.position = _startPosition;
+        _playerRigidBody.angularVelocity = Vector3.zero;
+        _playerRigidBody.linearVelocity = Vector3.zero;
         TogglePlayer(false);
     }
 

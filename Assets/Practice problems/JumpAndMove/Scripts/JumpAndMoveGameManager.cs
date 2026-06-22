@@ -40,7 +40,7 @@ public class JumpAndMoveGameManager : MonoBehaviour
     #region Private Methods
     private void OnButtonClicked(ButtonType button)
     {
-        if(button == ButtonType.StartGame)
+        if(button == ButtonType.StartGame || button == ButtonType.RestartGame)
             ToggleGameState();    
     }
 
@@ -59,6 +59,7 @@ public class JumpAndMoveGameManager : MonoBehaviour
     private void HandleGameOver()
     {
         _isGameStarted = false;
+        _currentScore = -1;
         OnGameStarted?.Invoke(_isGameStarted);
     }
 
