@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,40 +17,76 @@ public class TileController : MonoBehaviour
     private int _currentTileIndex = -1;
     private int _previousTileIndex = -1;
 
-    private Tile _tile1;
-    private Tile _tile2;
+    private Coroutine _spawnTileRoutine;
+
+    public static event Action<Vector3> OnTileSpawned;
 
     #region Unity Methods
     private void Start()
     {
-        for(int i=0; i<_poolSize; i++)
+        JumpAndMoveGameManager.OnGameStarted += OnGameStarted;
+
+        for (int i=0; i<_poolSize; i++)
         {
             Tile tile = Instantiate(_tilePrefab, transform);
             tile.gameObject.SetActive(false);
             _pooledTiles.Add(tile);
         }
-        SpawnTile();
     }
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.S))
             SpawnTile();
     }
+
+    private void OnDestroy()
+    {
+        JumpAndMoveGameManager.OnGameStarted -= OnGameStarted;
+    }
     #endregion
+
+    #region Private Methods
+
+    private void OnGameStarted(bool started)
+    {
+        if (started)
+            SpawnTile();
+        else
+            StopSpawning();
+    }
+
+    private void StopSpawning()
+    {
+        if(_spawnTileRoutine != null)
+            StopCoroutine(_spawnTileRoutine);
+
+        ResetTiles();
+    }
 
     private void SpawnTile()
     {
         Tile tile = GetTile();
         tile.gameObject.SetActive(true);
-        tile.StartDisable(_tileDisableSpeed);
+        tile.Init(_tileDisableSpeed);
         PositionTile(tile);
         SpawnTileAfterDelay(_nextTileSpawnSpeed);
+        OnTileSpawned?.Invoke(tile.transform.position);
+    }
+
+    private void ResetTiles()
+    {
+        _currentTileIndex = -1;
+        _previousTileIndex = -1;
+
+        foreach (Tile tile in _pooledTiles)
+        {
+            tile.ForceDisableTile();
+        }
     }
 
     private void SpawnTileAfterDelay(float delay = 0f)
     {
-        StartCoroutine(SpawnTileAfterDelayRoutine(delay));
+        _spawnTileRoutine = StartCoroutine(SpawnTileAfterDelayRoutine(delay));
     }
 
     private IEnumerator SpawnTileAfterDelayRoutine(float delay = 0f)
@@ -63,9 +100,9 @@ public class TileController : MonoBehaviour
         if(_previousTileIndex >= 0)
         {
             Vector3 newPosition = _pooledTiles[_previousTileIndex].transform.position;
-            int axis = Random.Range(0, 2);
+            int axis = UnityEngine.Random.Range(0, 2);
 
-            float offsetValue = Random.value > 0.5f ? 1 : -1;
+            float offsetValue = UnityEngine.Random.value > 0.5f ? 1 : -1;
 
             if (axis == 0)
                 newPosition.x += _tileSpacing * offsetValue;
@@ -79,6 +116,7 @@ public class TileController : MonoBehaviour
             tile.transform.position = Vector3.zero;
         }
     }
+    #endregion
 
     #region Public Methods
     public Tile GetTile()

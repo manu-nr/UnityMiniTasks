@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class JumpAndMovePlayerController : MonoBehaviour
@@ -5,9 +6,32 @@ public class JumpAndMovePlayerController : MonoBehaviour
     [SerializeField] private Vector3 _jumpForce;
     [SerializeField] private Rigidbody _playerRigidBody;
     [SerializeField] private float _movementForce;
+    [SerializeField] private float _playerFallThreshold;
+
+    private Vector3 _startPosition;
+
+    public static event Action OnPlayerFall;
+
+    private void Start()
+    {
+        _startPosition = transform.position;
+        JumpAndMoveGameManager.OnGameStarted += OnGameStarted;
+
+        TogglePlayer(false);
+    }
+
+    private void OnDestroy()
+    {
+        JumpAndMoveGameManager.OnGameStarted -= OnGameStarted;
+    }
 
     private void Update()
     {
+        if(transform.position.y < _playerFallThreshold)
+        {
+            OnPlayerFall?.Invoke();
+        }
+
         if(Input.GetKeyDown(KeyCode.Space))
         {
             _playerRigidBody.AddForce(_jumpForce, ForceMode.Impulse);
@@ -32,9 +56,6 @@ public class JumpAndMovePlayerController : MonoBehaviour
                 ControlPlayerMovement(MovementType.Right);
             }
         }
-        
-
-        Debug.Log("[NRM] Player velocity: " + _playerRigidBody.linearVelocity);
     }
 
     private void ControlPlayerMovement(MovementType type)
@@ -54,6 +75,31 @@ public class JumpAndMovePlayerController : MonoBehaviour
                 _playerRigidBody.AddForce(new Vector3(_movementForce, 0f, 0f), ForceMode.Impulse);
                 break;
         }
+    }
+    private void OnGameStarted(bool started)
+    {
+        if (started)
+            TogglePlayer(true);
+        else
+            OnGameOver();
+    }
+
+    private void OnGameOver()
+    {
+        ResetPlayerPosition();
+    }
+
+    private void ResetPlayerPosition()
+    {
+        transform.position = _startPosition;
+        _playerRigidBody.angularVelocity = Vector3.zero;
+        _playerRigidBody.linearVelocity = Vector3.zero;
+        TogglePlayer(false);
+    }
+
+    private void TogglePlayer(bool on)
+    {
+        gameObject.SetActive(on);
     }
 }
 
